@@ -13,11 +13,12 @@ import {
 } from 'react-icons/hi';
 import { Button } from './ui/button';
 import { IProduct } from '@/types/globalTypes';
+import { useAppSelector } from '@/redux/hooks';
 
 export default function Cart() {
   //! Dummy data
-
-  const products: IProduct[] = [];
+  const { products } = useAppSelector(state => state.cart);
+  // const products: IProduct[] = [];
   const total = 0;
 
   //! **
@@ -37,8 +38,8 @@ export default function Cart() {
         <div className="space-y-5">
           {products.map((product) => (
             <div
-              className="border h-44 p-5 flex justify-between rounded-md"
-              key={product.name}
+              className=" "
+              key={product?.name}
             >
               <div className="border-r pr-5 shrink-0">
                 <img src={product?.image} alt="" className="h-full" />
