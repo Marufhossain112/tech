@@ -1,14 +1,15 @@
-import { useGetCommentQuery, usePostCommentMutation } from '@/redux/features/api/apiSlice';
+
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
 import { FiSend } from 'react-icons/fi';
 import { ChangeEvent, FormEvent, useState } from 'react';
+import { useGetCommentQuery, usePostCommentMutation } from '@/redux/features/product/productApi';
 interface IProps {
   id: string;
 }
 export default function ProductReview({ id }: IProps) {
-  const { data } = useGetCommentQuery(id, { refetchOnMountOrArgChange: true, pollingInterval: 1000 });
+  const { data } = useGetCommentQuery(id, { refetchOnMountOrArgChange: true, pollingInterval: 30000 });
   console.log('ima id', id);
   const [inputValue, setInputValue] = useState<string>('');
   const [postComment, { isError, isLoading, isSuccess }] = usePostCommentMutation();
