@@ -1,29 +1,39 @@
 'use client';
 
 import * as React from 'react';
-
+import { useForm, SubmitHandler } from "react-hook-form";
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAppDispatch } from '@/redux/hooks';
+import { loginUser } from '@/redux/features/user/userSlice';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
+interface Inputs {
+  email: string;
+  password: string;
+}
 export function LoginForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading] = React.useState<boolean>(false);
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
-    setIsLoading(true);
+  const dispatch = useAppDispatch();
+  const {
+    register,
+    handleSubmit,
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-  }
+    formState: { errors },
+  } = useForm<Inputs>();
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
+    dispatch(loginUser({ email: data.email, password: data.password }));
+  };
+
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -37,7 +47,9 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              {...register("email", { required: 'Email is required' })}
             />
+            {errors.email && <p>{errors.email.message}</p>}
             <Input
               id="password"
               placeholder="your password"
@@ -45,7 +57,9 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="password"
               disabled={isLoading}
+              {...register("password", { required: 'Password is required' })}
             />
+            {errors.password && <p>{errors.password.message}</p>}
           </div>
           <Button disabled={isLoading}>
             {isLoading && <p>loading</p>}
