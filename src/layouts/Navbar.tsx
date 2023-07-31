@@ -3,6 +3,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Button } from '../components/ui/button';
 import { DropdownMenuSeparator } from '../components/ui/dropdown-menu';
 import { DropdownMenuLabel } from '../components/ui/dropdown-menu';
+import { signOut } from "firebase/auth";
+
 import {
   DropdownMenuItem,
   DropdownMenu,
@@ -12,11 +14,17 @@ import {
 import { HiOutlineSearch } from 'react-icons/hi';
 import Cart from '../components/Cart';
 import logo from '../assets/images/technet-logo.png';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { auth } from '@/lib/firebase';
+import { setUser } from '@/redux/features/user/userSlice';
 
 export default function Navbar() {
+  const dispatch = useAppDispatch();
   const handleLogout = () => {
-    console.log("Logout");
+    signOut(auth).then(() => {
+      dispatch(setUser(null));
+    });
+    // console.log("Logout");
   };
   const { user } = useAppSelector(state => state.user);
   return (
@@ -76,9 +84,9 @@ export default function Navbar() {
                           <DropdownMenuItem className="cursor-pointer">
                             SignUp
                           </DropdownMenuItem>
-                        </Link></> : <Link to='/signout'>
+                        </Link></> : <Link to='/'>
                         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
-                          SignOut
+                          Log out
                         </DropdownMenuItem>
                       </Link>
 

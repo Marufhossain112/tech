@@ -1,13 +1,15 @@
 'use client';
 
 import * as React from 'react';
+import { useEffect } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { loginUser } from '@/redux/features/user/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -16,19 +18,23 @@ interface Inputs {
   password: string;
 }
 export function LoginForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading] = React.useState<boolean>(false);
-
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
-
     formState: { errors },
   } = useForm<Inputs>();
+  const { user, isLoading } = useAppSelector((state) => state.user);
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
+    // console.log(data);
     dispatch(loginUser({ email: data.email, password: data.password }));
   };
+  useEffect(() => {
+    if (user.email && !isLoading) {
+      navigate('/');
+    }
+  }, [user.email, isLoading, navigate]);
 
 
   return (
