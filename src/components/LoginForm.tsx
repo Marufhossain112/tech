@@ -32,7 +32,13 @@ export function LoginForm({ className, ...props }: UserAuthFormProps) {
   };
   useEffect(() => {
     if (user.email && !isLoading) {
-      navigate('/');
+      const previousPrivateRoute = sessionStorage.getItem('previousPrivateRoute');
+      if (previousPrivateRoute) {
+        sessionStorage.removeItem('previousPrivateRoute');
+        navigate(previousPrivateRoute);
+      } else {
+        navigate('/');
+      }
     }
   }, [user.email, isLoading, navigate]);
 
